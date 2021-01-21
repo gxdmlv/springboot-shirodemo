@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.gx.springbootshiro.dao.UserInfoDao">
+
+    <resultMap id="userMap" type="com.gx.springbootshiro.domain.UserInfo">
+
+        <id column="uid" property="uid"></id>
+        <result column="name" property="name"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="salt" property="salt"></result>
+        <result column="state" property="state"></result>
+
+    </resultMap>
+
+    <resultMap id="userrolelistmap" type="com.gx.springbootshiro.domain.UserInfo" extends="userMap">
+        <collection resultMap="com.gx.springbootshiro.dao.RoleDao.roleMap" property="roleList" javaType="ArrayList">
+        </collection>
+    </resultMap>
+
+    <resultMap id="userrolepermissionMap" type="com.gx.springbootshiro.domain.UserInfo" extends="userMap">
+
+        <collection property="roleList" resultMap="com.gx.springbootshiro.dao.RoleDao.rolepermissionMap" javaType="ArrayList">
+        </collection>
+    </resultMap>
+
+    <select id="findUserAndRolesByUserName" resultMap="userrolelistmap" >
+       select u.uid,u.name,u.username,u.password,u.salt,u.state,r.id,r.role,r.description,r.available
+from user_info u ,sys_user_role ur, sys_role r
+where u.uid = ur.uid
+and ur.role_id = r.id
+and u.username = #{username}
+    </select>
+
+
+    <select id="findUserWithRoleListByUsername" resultMap="userrolepermissionMap">
+
+select u.uid,u.name,u.username,u.password,u.salt,u.state,r.id,r.role,r.description,r.available,
+       p.id,p.name,p.resource_type,p.url,p.permission,p.parent_id,p.parent_ids,p.available
+from user_info u ,sys_user_role ur, sys_role r ,sys_permission p,sys_role_permission rp
+where u.uid = ur.uid
+and ur.role_id = r.id
+and rp.permission_id = p.id
+and rp.role_id = r.id
+and u.username = #{username}
+    </select>
+
+
+</mapper>

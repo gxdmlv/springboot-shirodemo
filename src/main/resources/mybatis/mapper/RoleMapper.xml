@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gx.springbootshiro.dao.RoleDao">
+
+
+    <resultMap id="roleMap" type="com.gx.springbootshiro.domain.SysRole" >
+        <id column="id" property="id"></id>
+        <result column="" property="role"></result>
+        <result column="" property="description"></result>
+        <result column="" property="available"></result>
+    </resultMap>
+
+
+    <resultMap id="rolepermissionMap" extends="roleMap" type="com.gx.springbootshiro.domain.SysRole">
+
+        <collection property="permissions" resultMap="com.gx.springbootshiro.dao.PermissionDao.permissionMap" javaType="ArrayList"></collection>
+    </resultMap>
+</mapper>
